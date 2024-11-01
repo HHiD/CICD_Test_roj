@@ -1,0 +1,37 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检出项目代码
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # 设置 Flutter 环境
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.10.5' # 指定Flutter版本
+
+    # 依赖安装
+    - name: Install dependencies
+      run: flutter pub get
+
+    # 构建项目
+    - name: Build APK
+      run: flutter build apk --release
+
+    # 构建 iOS 应用 (可选)
+    - name: Build iOS
+      if: runner.os == 'macOS'
+      run: flutter build ios --release
